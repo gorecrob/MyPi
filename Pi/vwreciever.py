@@ -40,6 +40,7 @@ if __name__ == "__main__":
 
       while rx.ready():
          print("".join(chr (c) for c in rx.get()))
+         os.system("sendmail.py")
 
    rx.cancel() # Cancel Virtual Wire receiver.
    tx.cancel() # Cancel Virtual Wire transmitter.
