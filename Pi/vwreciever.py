@@ -5,6 +5,7 @@ if __name__ == "__main__":
    import time
    import pigpio
    import vw
+   import os
 
    RX=20
    TX=25
