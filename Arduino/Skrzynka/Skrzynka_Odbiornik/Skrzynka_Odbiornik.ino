@@ -1,3 +1,5 @@
+#include <VirtualWire.h>
+
 // receiver.pde
 //
 // Simple example of how to use VirtualWire to receive messages
@@ -7,8 +9,6 @@
 // Author: Mike McCauley (mikem@airspayce.com)
 // Copyright (C) 2008 Mike McCauley
 // $Id: receiver.pde,v 1.3 2009/03/30 00:07:24 mikem Exp $
-
-#include <VirtualWire.h>
 
 const int led_pin = 13;
 const int transmit_pin = 12;
@@ -38,7 +38,8 @@ void loop()
 {
     uint8_t buf[VW_MAX_MESSAGE_LEN];
     uint8_t buflen = VW_MAX_MESSAGE_LEN;
-
+    //delete[] buf;
+    //buflen = 0;
     if (vw_get_message(buf, &buflen)) // Non-blocking
     {
 	int i;
@@ -47,14 +48,15 @@ void loop()
 	// Message with a good checksum received, dump it.
 	Serial.print("Got: ");
 	
-	/*for (i = 0; i < buflen; i++)
+	for (i = 0; i < buflen; i++)
 	{
-	    Serial.print(buf[i], HEX);
-	    Serial.print(' ');
+	    Serial.print((char)buf[i]);
+	    //Serial.print(' ');
 	}
-*/
- char *wiadomosc = buf;
- Serial.println(wiadomosc);
+
+// char *wiadomosci = NULL;
+ //char *wiadomosc = buf;
+ //Serial.println(wiadomosc.substr(0,buf));
       
   
 
@@ -62,4 +64,7 @@ void loop()
    Serial.println (j++);
         digitalWrite(led_pin, LOW);
     }
+
+  // delete[] buf;
+   //&buflen = 0;
 }
