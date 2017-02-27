@@ -88,7 +88,7 @@ def sendMail ():
         return
 
     gmail_user = "raspberry.bencol@gmail.com"
-    gmail_pwd = ""
+    gmail_pwd = "Snowboard2"
     FROM = 'raspberry.bencol@gmail.com'
     TO = ['robert.gorecki@gmail.com'] #must be a list
     time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -111,9 +111,9 @@ def sendMail ():
         print ('failed to send mail at: ' + time)
 
 print ('=====================================================================================')
-wczytajOgloszenia()
-wczytajOgloszeniaOld()
-zapiszOgloszeniaOld()
-sprawdzNowe()
+#wczytajOgloszenia()
+#wczytajOgloszeniaOld()
+#zapiszOgloszeniaOld()
+#sprawdzNowe()
 sendMail()
 print ('=====================================================================================\n')
