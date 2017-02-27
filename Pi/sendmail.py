@@ -84,8 +84,8 @@ def sprawdzNowe ():
 def sendMail ():
     global listaNowych
 
-    //if len(listaNowych) < 1:
-     //   return
+    #if len(listaNowych) < 1:
+    #   return
 
     gmail_user = "raspberry.bencol@gmail.com"
     gmail_pwd = "Snowboard2"
