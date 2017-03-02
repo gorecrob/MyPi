@@ -4,7 +4,7 @@
 #include <DS18B20.h>
 #include <DHT.h>
 
-// Numer pinu do którego podłaczasz czujnik DS8B20
+// Numer pinu do którego podłaczasz czujnik DS18B20
 #define ONEWIRE_PIN 2
 // Numer pinu do którego podłaczasz czujnik DHT22
 #define DHTPIN 3
@@ -13,8 +13,11 @@
 
 #define KONTAKTRON_OPEN 9    // 15 nóżka µC
 #define KONTAKTRON_CLOSE 10  
-const char *wiadomosc;
 
+const char *door_msg_old;
+const char *door_msg_new;
+const char *dht22_msg;
+char *DS18B20_msg;
 
 // Adres czujnika
 byte address[8] = {0x28, 0x8B, 0xF8, 0x23, 0x6, 0x0, 0x0, 0xBD};
@@ -48,8 +51,15 @@ void readDS18B20 () {
     Serial.print("Temperatua DS18B20: ");
     Serial.print(temperature);
     Serial.println(F(" 'C"));
-
+    char temp_tmp [5];
+    dtostrf(temperature, 2, 2, temp_tmp);
+    Serial.println (temp_tmp);
     sensors.request(address);
+
+    DS18B20_msg = "GR1";
+    DS18B20_msg += temp_tmp;
+//    DS18B20_msg += " ";
+Serial.println (DS18B20_msg);
   }
 }
 
@@ -62,51 +72,40 @@ void readDHT22() {
   float h = dht.readHumidity();
   // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
-  // Read temperature as Fahrenheit (isFahrenheit = true)
-  float f = dht.readTemperature(true);
-
+  
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t) || isnan(f)) {
+  if (isnan(h) || isnan(t)) {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
 
   // Compute heat index in Fahrenheit (the default)
-  float hif = dht.computeHeatIndex(f, h);
-  // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
 
   Serial.print("Humidity: ");
   Serial.print(h);
   Serial.print(" %\t");
   Serial.print("Temperature: ");
   Serial.print(t);
-  Serial.print(" *C ");
-  Serial.print(f);
-  Serial.print(" *F\t");
-  Serial.print("Heat index: ");
-  Serial.print(hic);
-  Serial.print(" *C ");
-  Serial.print(hif);
-  Serial.println(" *F");
+  Serial.println(" *C ");
+  
 }
 
 void readGarageDoor () {
   if(digitalRead(KONTAKTRON_OPEN)==HIGH &&digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
-    wiadomosc = "RUCH";
+    door_msg_new = "RUCH";
   } 
   
   if(digitalRead(KONTAKTRON_OPEN)==LOW &&digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
-    wiadomosc = "OTWARTE";
+    door_msg_new = "OTWARTE";
   } 
   if(digitalRead(KONTAKTRON_OPEN)==HIGH &&digitalRead(KONTAKTRON_CLOSE)==LOW)
   {
-    wiadomosc = "ZAMKNIETE";
+    door_msg_new = "ZAMKNIETE";
   } 
     
-  Serial.println(wiadomosc);
+  Serial.println(door_msg_new);
   
 
 }
