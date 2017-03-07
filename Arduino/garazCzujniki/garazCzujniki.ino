@@ -16,8 +16,8 @@
 
 const char *door_msg_old;
 const char *door_msg_new;
-const char *dht22_msg;
-char *DS18B20_msg;
+const char *DHT22_msg;
+const char *DS18B20_msg;
 
 // Adres czujnika
 byte address[8] = {0x28, 0x8B, 0xF8, 0x23, 0x6, 0x0, 0x0, 0xBD};
@@ -51,15 +51,21 @@ void readDS18B20 () {
     Serial.print("Temperatua DS18B20: ");
     Serial.print(temperature);
     Serial.println(F(" 'C"));
-    char temp_tmp [5];
-    dtostrf(temperature, 2, 2, temp_tmp);
-    Serial.println (temp_tmp);
+    
+    char temp_tmp [1];
+    dtostrf(temperature, 3, 2, temp_tmp);
+    
+    //Serial.println (temp_tmp);
     sensors.request(address);
-
-    DS18B20_msg = "GR1";
-    DS18B20_msg += temp_tmp;
-//    DS18B20_msg += " ";
-Serial.println (DS18B20_msg);
+    
+    String stringOne = "GR1|";
+    stringOne += temp_tmp;
+   int strLen = stringOne.length()+1;  
+   char msg[1];
+   stringOne.toCharArray(msg, strLen);
+   //erial.println(stringOne);
+   DS18B20_msg = msg;
+   Serial.println (DS18B20_msg);
   }
 }
 
@@ -69,24 +75,42 @@ void readDHT22() {
 
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  float h = dht.readHumidity();
+  float humidity = dht.readHumidity();
   // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
-  
+  float temperature = dht.readTemperature();
+ 
   // Check if any reads failed and exit early (to try again).
-  if (isnan(h) || isnan(t)) {
+  if (isnan(humidity) || isnan(temperature)) {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
 
-  // Compute heat index in Fahrenheit (the default)
+  char temp_tmp [1];
+  dtostrf(temperature, 3, 2, temp_tmp);
+ 
+    String stringOne = "GR2|";
+  stringOne += temp_tmp;
+  stringOne +="|";
+  
+  char temp_hum [1];
+  dtostrf(humidity, 3, 2, temp_hum);
+  
+  stringOne += temp_hum;
 
-  Serial.print("Humidity: ");
-  Serial.print(h);
+  
+  Serial.print("DHT22 --- Humidity: ");
+  Serial.print(humidity);
   Serial.print(" %\t");
   Serial.print("Temperature: ");
-  Serial.print(t);
+  Serial.print(temperature);
   Serial.println(" *C ");
+
+  int strLen = stringOne.length()+1;  
+  char msg[1];
+  stringOne.toCharArray(msg, strLen);
+
+  DHT22_msg = msg;
+  Serial.println (DHT22_msg);
   
 }
 
