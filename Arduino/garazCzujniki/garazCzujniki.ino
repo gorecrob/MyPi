@@ -15,13 +15,14 @@
 #define KONTAKTRON_OPEN 9    // 15 leg Atmega328 µC
 #define KONTAKTRON_CLOSE 10  // 16 leg Atmega328 µC
 
-const char *door_msg_old;
-const char *door_msg_new;
+char *door_msg_old = "";
+char *door_msg_new = "";
 const char *DHT22_msg;
 const char *DS18B20_msg;
-
+//int doorStatusNew = 0;
+//int doorStatusOld = 0;
 // Adress DS18B20
-byte sensorAddress[8] = {0x28, 0x8B, 0xF8, 0x23, 0x6, 0x0, 0x0, 0xBD};
+const byte sensorAddress[8] = {0x28, 0x8B, 0xF8, 0x23, 0x6, 0x0, 0x0, 0xBD};
 
 OneWire onewire(ONEWIRE_PIN);
 DS18B20 sensors(&onewire);
@@ -29,8 +30,8 @@ DS18B20 sensors(&onewire);
 DHT dht(DHTPIN, DHTTYPE);
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
-const long interval = 10000;           // interval at which to blink (milliseconds)
-
+const long interval = 5000;           // interval at which to blink (milliseconds)
+unsigned long previousMillis1 = 0;   
 
 //433 sender
 const int led_pin = 11;
@@ -38,6 +39,7 @@ const int transmit_pin = 12;
 const int receive_pin = 2;
 const int transmit_en_pin = 3;
 
+int doorStatusOld;
 void setup() {
   while(!Serial);
   Serial.begin(9600);
@@ -58,7 +60,43 @@ void setup() {
 
 
 }
+void readGarageDoor () {
+  char * msg;
+  //int doorStatusOld = doorStatus;
+  if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==HIGH)
+  {
+    Serial.println("MOVE");
+    msg = "MOVE";
+   // vw_send((uint8_t *)msg, strlen(msg));
+   // vw_wait_tx();
+  } 
+  
+  if(digitalRead(KONTAKTRON_OPEN)==LOW && digitalRead(KONTAKTRON_CLOSE)==HIGH)
+  {
+    Serial.println("OPEN");
+    msg = "OPEN";
+   // vw_send((uint8_t *)msg, strlen(msg));
+   // vw_wait_tx();
+  } 
+  if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==LOW)
+  {
+    Serial.println("CLOSE");
+    msg = "CLOSE";
+   // vw_send((uint8_t *)msg, strlen(msg));
+   // vw_wait_tx();
+  } 
+  if (door_msg_old != msg)
+  {  
+    vw_send((uint8_t *)msg, strlen(msg));
+    vw_wait_tx();
+    door_msg_old = msg; 
+  }
+}
+
+
+
 void readDS18B20 () {
+
   // Requests sensor for measurement
   sensors.request(sensorAddress);
   
@@ -87,6 +125,7 @@ void readDS18B20 () {
 //433 send temp
   vw_send((uint8_t *)DS18B20_msg, strlen(DS18B20_msg));
   vw_wait_tx();    
+
 }
 
 
@@ -133,35 +172,6 @@ void readDHT22() {
   
 }
 
-void readGarageDoor () {
-  if(digitalRead(KONTAKTRON_OPEN)==HIGH &&digitalRead(KONTAKTRON_CLOSE)==HIGH)
-  {
-    //Door
-    door_msg_new = "MOVE";
-  } 
-  
-  if(digitalRead(KONTAKTRON_OPEN)==LOW &&digitalRead(KONTAKTRON_CLOSE)==HIGH)
-  {
-    door_msg_new = "OPEN";
-  } 
-  if(digitalRead(KONTAKTRON_OPEN)==HIGH &&digitalRead(KONTAKTRON_CLOSE)==LOW)
-  {
-    door_msg_new = "CLOSE";
-  } 
-    
-  Serial.println(door_msg_new);
-  
-  //Send only if new state
-  if (door_msg_new != door_msg_old)
-  { 
-    //433 send 
-    vw_send((uint8_t *)door_msg_new, strlen(door_msg_new));
-    vw_wait_tx();
-    door_msg_old = door_msg_new;
-  }    
-}
-
-
 void loop() {
 
     unsigned long currentMillis = millis();
@@ -174,8 +184,8 @@ void loop() {
     readDHT22();
   }
   delay (1000);
-  readGarageDoor ();
-  
+ readGarageDoor ();; 
+
 }
 
 
