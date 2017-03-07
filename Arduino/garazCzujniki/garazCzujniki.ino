@@ -19,8 +19,7 @@ char *door_msg_old = "";
 char *door_msg_new = "";
 const char *DHT22_msg;
 const char *DS18B20_msg;
-//int doorStatusNew = 0;
-//int doorStatusOld = 0;
+
 // Adress DS18B20
 const byte sensorAddress[8] = {0x28, 0x8B, 0xF8, 0x23, 0x6, 0x0, 0x0, 0xBD};
 
@@ -39,7 +38,7 @@ const int transmit_pin = 12;
 const int receive_pin = 2;
 const int transmit_en_pin = 3;
 
-int doorStatusOld;
+
 void setup() {
   while(!Serial);
   Serial.begin(9600);
@@ -60,31 +59,30 @@ void setup() {
 
 
 }
+
+
+
 void readGarageDoor () {
+  
   char * msg;
-  //int doorStatusOld = doorStatus;
+
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
     Serial.println("MOVE");
     msg = "MOVE";
-   // vw_send((uint8_t *)msg, strlen(msg));
-   // vw_wait_tx();
   } 
   
   if(digitalRead(KONTAKTRON_OPEN)==LOW && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
     Serial.println("OPEN");
     msg = "OPEN";
-   // vw_send((uint8_t *)msg, strlen(msg));
-   // vw_wait_tx();
   } 
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==LOW)
   {
     Serial.println("CLOSE");
     msg = "CLOSE";
-   // vw_send((uint8_t *)msg, strlen(msg));
-   // vw_wait_tx();
   } 
+  
   if (door_msg_old != msg)
   {  
     vw_send((uint8_t *)msg, strlen(msg));
