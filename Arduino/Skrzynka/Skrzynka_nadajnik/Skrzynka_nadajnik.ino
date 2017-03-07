@@ -1,5 +1,6 @@
 #include <VirtualWire.h>
 
+
 #define kontaktronPin 9    // 15 nóżka µC
 const int led_pin = 11;
 const int transmit_pin = 10;

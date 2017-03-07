@@ -1,5 +1,5 @@
-//#include <VirtualWire.h>
 
+#include <VirtualWire.h>
 #include <OneWire.h>
 #include <DS18B20.h>
 #include <DHT.h>
@@ -48,14 +48,14 @@ void setup() {
   
   pinMode(KONTAKTRON_OPEN, INPUT_PULLUP);
   pinMode(KONTAKTRON_CLOSE, INPUT_PULLUP);  
-/*
+
   // Initialise the IO and ISR
   vw_set_tx_pin(transmit_pin);
   vw_set_rx_pin(receive_pin);
   vw_set_ptt_pin(transmit_en_pin);
   vw_set_ptt_inverted(true); // Required for DR3100
   vw_setup(2000);       // Bits per sec
-*/
+
 
 }
 void readDS18B20 () {
@@ -85,8 +85,8 @@ void readDS18B20 () {
   DS18B20_msg = msg;
   Serial.println (DS18B20_msg);
 //433 send temp
-  //vw_send((uint8_t *)DS18B20_msg, strlen(DS18B20_msg));
-  //vw_wait_tx();    
+  vw_send((uint8_t *)DS18B20_msg, strlen(DS18B20_msg));
+  vw_wait_tx();    
 }
 
 
@@ -128,8 +128,8 @@ void readDHT22() {
   DHT22_msg = msg;
   Serial.println (DHT22_msg);
 //433 send temp
-  //vw_send((uint8_t *)DHT22_msg, strlen(DHT22_msg));
-  //vw_wait_tx();  
+  vw_send((uint8_t *)DHT22_msg, strlen(DHT22_msg));
+  vw_wait_tx();  
   
 }
 
@@ -155,8 +155,8 @@ void readGarageDoor () {
   if (door_msg_new != door_msg_old)
   { 
     //433 send 
-    //vw_send((uint8_t *)door_msg_new, strlen(door_msg_new));
-    //vw_wait_tx();
+    vw_send((uint8_t *)door_msg_new, strlen(door_msg_new));
+    vw_wait_tx();
     door_msg_old = door_msg_new;
   }    
 }
