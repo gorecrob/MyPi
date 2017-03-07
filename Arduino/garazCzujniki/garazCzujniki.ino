@@ -69,18 +69,18 @@ void readGarageDoor () {
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
     //Serial.println("MOVE");
-    msg = "MOVE";
+    msg = "GR03|MOVE";
   } 
   
   if(digitalRead(KONTAKTRON_OPEN)==LOW && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
     //Serial.println("OPEN");
-    msg = "OPEN";
+    msg = "GR03|OPEN";
   } 
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==LOW)
   {
     //Serial.println("CLOSE");
-    msg = "CLOSE";
+    msg = "GR03|CLOSE";
   } 
   
   if (door_msg_old != msg)
@@ -113,7 +113,7 @@ void readDS18B20 () {
   char temp_tmp [1];
   dtostrf(temperature, 3, 2, temp_tmp);
     
-  String stringOne = "GR1|";
+  String stringOne = "GR01|";
   stringOne += temp_tmp;
   int strLen = stringOne.length()+1;  
   char msg[1];
@@ -144,7 +144,7 @@ void readDHT22() {
   char temp_tmp [1];
   dtostrf(temperature, 3, 2, temp_tmp);
  
-  String stringOne = "GR2|";
+  String stringOne = "GR02|";
   stringOne += temp_tmp;
   stringOne +="|";
   
