@@ -29,7 +29,7 @@ DS18B20 sensors(&onewire);
 DHT dht(DHTPIN, DHTTYPE);
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
-const long interval = 5000;           // interval at which to blink (milliseconds)
+const long interval = (60000 * 5);           // interval at which to blink (milliseconds)
 unsigned long previousMillis1 = 0;   
 
 //433 sender
@@ -68,18 +68,18 @@ void readGarageDoor () {
 
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
-    Serial.println("MOVE");
+    //Serial.println("MOVE");
     msg = "MOVE";
   } 
   
   if(digitalRead(KONTAKTRON_OPEN)==LOW && digitalRead(KONTAKTRON_CLOSE)==HIGH)
   {
-    Serial.println("OPEN");
+    //Serial.println("OPEN");
     msg = "OPEN";
   } 
   if(digitalRead(KONTAKTRON_OPEN)==HIGH && digitalRead(KONTAKTRON_CLOSE)==LOW)
   {
-    Serial.println("CLOSE");
+    //Serial.println("CLOSE");
     msg = "CLOSE";
   } 
   
@@ -87,6 +87,7 @@ void readGarageDoor () {
   {  
     vw_send((uint8_t *)msg, strlen(msg));
     vw_wait_tx();
+    Serial.println(msg);
     door_msg_old = msg; 
   }
 }
