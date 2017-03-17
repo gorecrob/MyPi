@@ -29,7 +29,7 @@ DS18B20 sensors(&onewire);
 DHT dht(DHTPIN, DHTTYPE);
 
 unsigned long previousMillis = 0;        // will store last time LED was updated
-const long interval = 6000;//(60000 * 5);           // interval at which to blink (milliseconds)
+const long interval = (60000 * 5);           // interval at which to blink (milliseconds)
 unsigned long previousMillis1 = 0;   
 
 //433 sender
@@ -83,8 +83,6 @@ void readGarageDoor () {
   
   if (door_msg_old != msg)
   {  
-   // vw_send((uint8_t *)msg, strlen(msg));
-   // vw_wait_tx();
    for (int i=0; i<3;i++)
    {
      if (msg == "MOVE")
@@ -102,17 +100,17 @@ void readGarageDoor () {
 
 
 void readDS18B20 () {
-Serial.println(" readDS18B20 1 ");
+
   // Requests sensor for measurement
   sensors.request(sensorAddress);
-  Serial.println(" readDS18B20 2 ");
+
   // Waiting (block the program) for measurement reesults
   while(!sensors.available());
-  Serial.println(" readDS18B20 3 ");
+
   // Reads the temperature from sensor
   float temperature = sensors.readTemperature(sensorAddress);
   // Prints the temperature on Serial Monitor
-  Serial.println(" readDS18B20 4 ");
+
   Serial.print("DS18B20 --- Temperature: ");
   Serial.print(temperature);
   Serial.println(F(" 'C"));
@@ -216,7 +214,7 @@ void readDHT22() {
 }
 
 void loop() {
-Serial.println(" start ");
+
     unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval || currentMillis < previousMillis) {
@@ -228,7 +226,7 @@ Serial.println(" start ");
   }
   delay (1000);
  readGarageDoor ();; 
- Serial.println(" test ");
+
 
 }
 
